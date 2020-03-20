@@ -51,6 +51,12 @@ open class SwipeViewController: UINavigationController, UIPageViewControllerDele
             buttons.enumerated().filter { key, _ in currentPageIndex != key }.forEach { _, element in element.titleLabel?.textColor = buttonColor }
         }
     }
+    
+    public var buttonLrPadding: (CGFloat, CGFloat) = (0, 0) {
+        didSet {
+            buttons.forEach { $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: buttonLrPadding.0, bottom: 0, right: buttonLrPadding.1) }
+        }
+    }
 
     public var selectedButtonColor: UIColor = .green {
         didSet {
@@ -158,7 +164,8 @@ open class SwipeViewController: UINavigationController, UIPageViewControllerDele
 
         titleLabel.sizeToFit()
 
-        button.frame = titleLabel.frame
+        button.frame.size.width = titleLabel.frame.width + button.titleEdgeInsets.left + button.titleEdgeInsets.right
+        button.frame.size.height = navigationBar.frame.height
     }
 
     private func createSelectionBar() {
@@ -242,7 +249,8 @@ open class SwipeViewController: UINavigationController, UIPageViewControllerDele
             let buttonHeight = button.frame.height
             let buttonWidth = button.frame.width
 
-            let originY = navigationView.frame.height - selectionBarHeight - bottomOffset - buttonHeight - 3
+            // let originY = navigationView.frame.height - selectionBarHeight - bottomOffset - buttonHeight - 3
+            let originY = navigationView.frame.height - bottomOffset - buttonHeight
             var originX: CGFloat = 0
 
             if equalSpaces {
